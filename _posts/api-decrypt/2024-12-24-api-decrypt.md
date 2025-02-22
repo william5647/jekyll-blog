@@ -40,7 +40,7 @@ In this demo web application, the API request will be encrypted with AES encrypt
 <figcaption>Demo Application</figcaption>
 </figure>
 
-The generateRandomString() function will generate random strings from the "characters" constant and the "encryptValue()" function will take three variables, which includes "value", "key", and "iv" to perform encryption process.
+The "generateRandomString()" function will generate random strings from the "characters" constant and the "encryptValue()" function will take three variables, which includes "value", "key", and "iv" to perform encryption process.
 
 <figure>
 <img src="{{ page.image }}" alt="JavaScript Function">
