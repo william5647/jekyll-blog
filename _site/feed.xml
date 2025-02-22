@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" hreflang="en-US" /><updated>2025-02-22T16:58:32+07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">William Tirtadjaja</title><subtitle>Feel free to explore my blog, where I share a wealth of insights on topics related to Vulnerability Assessments and Penetration Testing.</subtitle><author><name>William Tirtadjaja</name><email>tirtadjajawilliam@gmail.com</email></author><entry><title type="html">Android Root Detection Evasion</title><link href="http://localhost:4000/root-detection-evasion/" rel="alternate" type="text/html" title="Android Root Detection Evasion" /><published>2024-12-12T10:00:00+07:00</published><updated>2024-12-12T10:00:00+07:00</updated><id>http://localhost:4000/root-detection-evasion</id><content type="html" xml:base="http://localhost:4000/root-detection-evasion/"><![CDATA[<h3 id="magisk-hide-module">Magisk Hide Module</h3>
+
+<p>If your device has been rooted with Magisk, you can make use of the “MagiskHide” feature within the Magisk application.</p>
+
+<ol>
+  <li>Download the <a href="https://github.com/HuskyDG/MagiskHide">MagiskHide</a> from GitHub and install it from your device’s storage.</li>
+  <li>Enable the MagiskHide module.</li>
+  <li>Navigate to Settings &gt; Enable Zygisk &gt; Enable Enforce Deny List &gt; Configure DenyList &gt; Select the Application.</li>
+</ol>
+
+<figure>
+<img src="/root-detection-evasion/img1.PNG" alt="MagiskHide" />
+<figcaption>MagiskHide</figcaption>
+</figure>
+
+<h3 id="community-script-and-tool">Community Script and Tool</h3>
+
+<p>The first essential step when using Frida is to set up the Frida server on your Android device.
+This can be done easily by installing the <a href="https://github.com/ViRb3/magisk-frida">Frida Server</a>. Simply enable the module and restart your device.</p>
+
+<figure>
+<img src="/root-detection-evasion/img2.PNG" alt="Frida Server" />
+<figcaption>Frida Server</figcaption>
+</figure>
+
+<p><strong>Keep in mind that Frida cannot run simultaneously with MagiskHide. It is important to disable all settings applied in the previous tutorial before attempting these steps</strong></p>
+
+<p>Another option is to download the Frida server for your specific Android platform (ARM, ARM64, x86, x86_64). You can find the Frida servers on their official release page: <a href="https://github.com/frida/frida/releases">Frida</a>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>adb push frida-server /data/local/tmp/
+<span class="nv">$ </span>adb shell “chmod 755 /data/local/tmp/frida-server”
+<span class="nv">$ </span>adb shell “/data/local/tmp/frida-server &amp;”
+</code></pre></div></div>
+
+<h4 id="frida-script">Frida Script</h4>
+
+<p>This is the most commonly used and widely recognized method for bypassing root detection.</p>
+
+<ol>
+  <li>Connect your device to your computer using the USB cable.</li>
+  <li>Running the Frida script will launch the targeted application.</li>
+</ol>
+
+<p>Here is my most used community <a href="https://gist.github.com/pich4ya/0b2a8592d3c8d5df9c34b8d185d2ea35">script</a> for bypassing root detection and overcoming general protections.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>frida <span class="nt">-U</span> <span class="nt">-f</span> package.name <span class="nt">-l</span> root-detection.js
+frida <span class="nt">-l</span> root-detection.js <span class="nt">-U</span> <span class="nt">-n</span> <span class="s1">'appname'</span>
+</code></pre></div></div>
+
+<figure>
+<img src="/root-detection-evasion/img4.PNG" alt="Frida Script" />
+<figcaption>Frida Script</figcaption>
+</figure>
+
+<h4 id="fridaantirootdetection">FridaAntiRootDetection</h4>
+
+<p>The next <a href="https://github.com/AshenOneYe/FridaAntiRootDetection">root evasion tool</a> I’d like to share is Frida Anti Root Detection by AshenOneYe. This tool works by attaching itself to the application’s processes.</p>
+
+<p>All you need to do is change the target’s package name in the Python script, and you’re good to go! While it can be fun to experiment with these tools, always remember that responsible and ethical use of your skills is key to contributing positively to the digital community. 😁</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import frida
+import os
+
+device <span class="o">=</span> frida.get_usb_device<span class="o">()</span>
+print<span class="o">(</span>device<span class="o">)</span>
+
+target <span class="o">=</span> com.packagename.value
+</code></pre></div></div>
+<figure>
+<img src="/root-detection-evasion/img3.PNG" alt="FridaAntiRootDetection" />
+<figcaption>FridaAntiRootDetection</figcaption>
+</figure>
+
+<h4 id="objection">Objection</h4>
+
+<p>Last but not least, we have Objection. In addition to providing root bypass functionality, it offers a wide range of versatile features, including runtime mobile exploration.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>objection <span class="nt">--gadget</span> com.packagename.value explore
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>objection <span class="nt">--gadget</span> com.packagename.value explore <span class="nt">-s</span> <span class="s2">"android root disable"</span>
+</code></pre></div></div>
+
+<figure>
+<img src="/root-detection-evasion/img5.PNG" alt="Objection" />
+<figcaption>Objection</figcaption>
+</figure>]]></content><author><name>William Tirtadjaja</name><email>tirtadjajawilliam@gmail.com</email></author><category term="jekyll" /><category term="update" /><category term="tips" /><category term="android" /><category term="mobile" /><summary type="html"><![CDATA[Magisk Hide Module]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/%5B%22/root-detection-evasion/img1.PNG%22%5D" /><media:content medium="image" url="http://localhost:4000/%5B%22/root-detection-evasion/img1.PNG%22%5D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Decrypting and Manipulating Encrypted API Request</title><link href="http://localhost:4000/api-decrypt/" rel="alternate" type="text/html" title="Decrypting and Manipulating Encrypted API Request" /><published>2024-12-12T10:00:00+07:00</published><updated>2024-12-12T10:00:00+07:00</updated><id>http://localhost:4000/api-decrypt</id><content type="html" xml:base="http://localhost:4000/api-decrypt/"><![CDATA[<p>What if all the requests sent by the application are encrypted during the assessment, making it impossible to modify any requests during transmission? This can hinder the penetration testing process. Let’s address this issue.</p>
+
+<p>When an API request or response is encrypted, there will always be a client-side script responsible for the encryption process. Our task is to identify the key used in this process.</p>
+
+<p>In this demo web application, the API request will be encrypted with AES encryption. Let’s dive deeper into the client-side script to explore it further.</p>
+
+<figure>
+<img src="/api-decrypt/img9.PNG" alt="Demo Application" />
+<figcaption>Demo Application</figcaption>
+</figure>
+
+<p>The generateRandomString() function will generate random strings from the “characters” constant and the “encryptValue()” function will take three variables, which includes “value”, “key”, and “iv” to perform encryption process.</p>
+
+<figure>
+<img src="/api-decrypt/img1.PNG" alt="JavaScript Function" />
+<figcaption>JavaScript Function</figcaption>
+</figure>
+
+<p>The following snippet shows that “loginData” constant containing “username” and “password” variable will be encrypted with the “encryptValue()” function as the value, and will grab the “key” and “iv” from the randomly generated strings.</p>
+
+<figure>
+<img src="/api-decrypt/img2.PNG" alt="API Encryption" />
+<figcaption>API Encryption</figcaption>
+</figure>
+
+<p>Here, we can see the end result of the encryption process.</p>
+
+<figure>
+<img src="/api-decrypt/img4.PNG" alt="Encrypted Request" />
+<figcaption>Encrypted Request</figcaption>
+</figure>
+
+<h3 id="how-do-we-decrypt-and-manipulate-the-api-request-then">How do we decrypt and manipulate the API request then?</h3>
+
+<p>On the web application, we can send an example request to submit our credential with “foo” username and “foo” password.</p>
+
+<figure>
+<img src="/api-decrypt/img3.PNG" alt="Example Request" />
+<figcaption>Example Request</figcaption>
+</figure>
+
+<p>Here, we can set a breakpoint in the web browser debugger, enabling us to manipulate the data, even if it is not being entered through user input. We will then change the username from “foo” to “bar” for demonstration purposes.</p>
+
+<figure>
+<img src="/api-decrypt/img5.PNG" alt="Request Parameter Manipulation" />
+<figcaption>Request Parameter Manipulation</figcaption>
+</figure>
+
+<p>We then can grab the randomly generated IV and Key by setting a breakpoint on the encryption function where it is being called.</p>
+
+<p>IV=rq1vLGpUYj8MUzQo and Key=DZs88qaQ6kzUYbZZ</p>
+
+<figure>
+<img src="/api-decrypt/img6.PNG" alt="IV and Key" />
+<figcaption>IV and Key</figcaption>
+</figure>
+
+<p>Here is now our newly generated encrypted body request.</p>
+
+<figure>
+<img src="/api-decrypt/img7.PNG" alt="Encrypted Request" />
+<figcaption>Encrypted Request</figcaption>
+</figure>
+
+<p>As we know the IV and Key from our previous step, we can decrypt the payload with any online <a href="https://www.devglan.com/online-tools/aes-encryption-decryption">AES decryptor</a>.</p>
+
+<figure>
+<img src="/api-decrypt/img8.PNG" alt="Decrypted Request" />
+<figcaption>Decrypted Request</figcaption>
+</figure>
+
+<p>Now we have successfully learned how to decrypt and manipulate encrypted API request.</p>]]></content><author><name>William Tirtadjaja</name><email>tirtadjajawilliam@gmail.com</email></author><category term="jekyll" /><category term="update" /><category term="tips" /><category term="web" /><category term="decryption" /><summary type="html"><![CDATA[What if all the requests sent by the application are encrypted during the assessment, making it impossible to modify any requests during transmission? This can hinder the penetration testing process. Let’s address this issue.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/%5B%22/api-decrypt/img1.PNG%22%5D" /><media:content medium="image" url="http://localhost:4000/%5B%22/api-decrypt/img1.PNG%22%5D" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
