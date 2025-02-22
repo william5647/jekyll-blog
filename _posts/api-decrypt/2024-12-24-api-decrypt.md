@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Decrypting and Manipulating Encrypted API Request"
-date:   2024-12-12 10:00:00 +0700
+date:   2024-12-24 10:00:00 +0700
 categories: jekyll update
 usemathjax: true
 tag:
